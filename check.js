@@ -1,4 +1,4 @@
-const FILENAME = "findoutifyouneedplanningpermission"
+const FILENAME = "test"
 
 const { alg, Graph } = require("graphlib");
 const fs = require("fs")
@@ -47,8 +47,18 @@ const toGraphlib = (flow) => {
 
 const graph = toGraphlib(flow);
 
-if (!alg.isAcyclic(graph)) {
-  throw "cycle in graph"
+const cycles = alg.findCycles(graph);
+
+if (cycles.length > 0) {
+  throw console.error(JSON.stringify({
+    cycles: cycles.map((cycle) => cycle.map((id) => {
+      return {
+        id,
+        ...flow.nodes[id],
+        ">": flow.edges.filter(([src]) => src === id).map(([,tgt]) => tgt).filter(i => cycle.includes(i))
+      }
+    }))
+  }, null, 2));
 }
 
 console.log(alg.preorder(graph, ['null']))
