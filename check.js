@@ -97,9 +97,33 @@ const go = async (id) => {
     );
   }
 
-  console.log(alg.preorder(graph, ["null"]));
-
   await fs.writeFile(`./${id}.json`, JSON.stringify(flow, null, 2));
+
+  const newData = alg.preorder(graph, ["null"]).reduce((acc, id) => {
+    if (id === "null") {
+      acc["_root"] = {
+        edges: flow.edges.filter(([src]) => src === null).map(([, tgt]) => tgt),
+      };
+    } else {
+      // const { $t, text, ...data } = flow.nodes[id];
+      const { $t, ...data } = flow.nodes[id];
+      const ob = {
+        data,
+        edges: flow.edges.filter(([src]) => src === id).map(([, tgt]) => tgt),
+        // text,
+        type: $t,
+      };
+      if (ob.type <= 0) delete ob.type;
+      // if (ob.text === "" || ob.text === null || ob.text === undefined)
+      //   delete ob.text;
+      if (ob.data === {}) delete ob.data;
+      if (ob.edges.length === 0) delete ob.edges;
+      acc[id] = ob;
+    }
+    return acc;
+  }, {});
+
+  await fs.writeFile(`./${id}.new.json`, JSON.stringify(newData, null, 2));
 };
 
 go("86d80cbe-04ad-4cec-aaba-4d1833f19033");
