@@ -1,6 +1,8 @@
 dependencies:
   graphlib: 2.1.8
   isomorphic-unfetch: 3.1.0
+  nanoid: 3.1.16
+  nanoid-good: 3.1.0
 lockfileVersion: 5.2
 packages:
   /graphlib/2.1.8:
@@ -20,6 +22,24 @@ packages:
     dev: false
     resolution:
       integrity: sha512-PlhdFcillOINfeV7Ni6oF1TAEayyZBoZ8bcshTHqOYJYlrqzRK5hagpagky5o4HfCzzd1TRkXPMFq6cKk9rGmA==
+  /nanoid-good/3.1.0:
+    dependencies:
+      nanoid: 3.1.16
+      naughty-words: 1.2.0
+    dev: false
+    resolution:
+      integrity: sha512-gG9D+AVHAZ+t2mAk3sw+Bx08VzOBc8fc+JylIzCLbEoRYakvQK9RiI3U+bXjdlMc5Ec4W9zUQsZZKngjifv7Vw==
+  /nanoid/3.1.16:
+    dev: false
+    engines:
+      node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1
+    hasBin: true
+    resolution:
+      integrity: sha512-+AK8MN0WHji40lj8AEuwLOvLSbWYApQpre/aFJZD71r43wVRLrOYS4FmJOPQYon1TqB462RzrrxlfA74XRES8w==
+  /naughty-words/1.2.0:
+    dev: false
+    resolution:
+      integrity: sha512-0iadX6fN+3NsfvIRtWmmpEX9VsoIQ6n9FwyIxmew9w5yzFNqMgs/Ky0eAC/z5xXSHtqlVoByiovdROikwH9SXQ==
   /node-fetch/2.6.1:
     dev: false
     engines:
@@ -33,3 +53,5 @@ packages:
 specifiers:
   graphlib: ^2.1.8
   isomorphic-unfetch: ^3.1.0
+  nanoid: ^3.1.16
+  nanoid-good: ^3.1.0

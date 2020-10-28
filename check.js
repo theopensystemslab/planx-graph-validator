@@ -1,5 +1,11 @@
 const fetch = require("isomorphic-unfetch");
 const { alg, Graph } = require("graphlib");
+const en = require("nanoid-good/locale/en");
+const customAlphabet = require("nanoid-good").customAlphabet(en);
+const nanoid = customAlphabet(
+  "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+  10
+);
 
 // const FILENAME = "test"
 // const data = require(`./${FILENAME}.json`);
@@ -99,17 +105,33 @@ const go = async (id) => {
 
   await fs.writeFile(`./${id}.json`, JSON.stringify(flow, null, 2));
 
-  const newData = alg.preorder(graph, ["null"]).reduce((acc, id) => {
+  const ids = alg.preorder(graph, ["null"]);
+
+  const dictionary = ids.reduce((acc, id) => {
     if (id === "null") {
-      acc["_root"] = {
-        edges: flow.edges.filter(([src]) => src === null).map(([, tgt]) => tgt),
+      acc[id] = "_root";
+    } else {
+      acc[id] = nanoid();
+    }
+    return acc;
+  }, {});
+
+  const newData = ids.reduce((acc, id) => {
+    let ob;
+    if (id === "null") {
+      ob = {
+        edges: flow.edges
+          .filter(([src]) => src === null)
+          .map(([, tgt]) => dictionary[tgt]),
       };
     } else {
       // const { $t, text, ...data } = flow.nodes[id];
       const { $t, ...data } = flow.nodes[id];
-      const ob = {
+      ob = {
         data,
-        edges: flow.edges.filter(([src]) => src === id).map(([, tgt]) => tgt),
+        edges: flow.edges
+          .filter(([src]) => src === id)
+          .map(([, tgt]) => dictionary[tgt]),
         // text,
         type: $t,
       };
@@ -118,12 +140,18 @@ const go = async (id) => {
       //   delete ob.text;
       if (ob.data === {}) delete ob.data;
       if (ob.edges.length === 0) delete ob.edges;
-      acc[id] = ob;
     }
+
+    acc[dictionary[id]] = ob;
     return acc;
   }, {});
 
   await fs.writeFile(`./${id}.new.json`, JSON.stringify(newData, null, 2));
+
+  await fs.writeFile(
+    `./${id}.dictionary.json`,
+    JSON.stringify(dictionary, null, 2)
+  );
 };
 
 go("86d80cbe-04ad-4cec-aaba-4d1833f19033");
